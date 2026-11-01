@@ -3,7 +3,11 @@
 Challenge 2 from [codebar's opencode AI workshop](https://github.com/codebar/ai-workshop-opencode):
 a complete arcade game in one page, with no assets and no dependencies.
 
-## Run it
+## Play online
+
+<https://timely-centaur-b541de.netlify.app/>
+
+## Run it locally
 
 ```bash
 npx serve .
@@ -50,3 +54,10 @@ All the knobs are at the top of their functions in `game.js`:
 - `updateAliens()` — drop distance, speed ramp as aliens die.
 - `updateEnemyFire()` — fire interval, bullet cap, bullet speed.
 - `firePlayerBullet()` — cooldown and bullet speed.
+
+## Deployment
+
+The live site is a manual Netlify deploy. To publish an update, zip the three
+source files so `index.html` sits at the archive root, then drop the zip at
+<https://app.netlify.com/drop>.
+
