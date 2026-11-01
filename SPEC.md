@@ -52,9 +52,9 @@ guard so the shot that killed you cannot restart the game instantly.
 | Input | Action |
 | --- | --- |
 | `←` / `→` | Move |
-| `Space` | Fire; hold to repeat at the 220ms cooldown |
+| `Space` | Shoot; hold to repeat at the 220ms cooldown |
 | Click or tap the canvas | Start or retry |
-| On-screen pad (touch) | `◀` `▶` `FIRE`, same bindings |
+| On-screen pad (touch) | `◀` `▶` `SHOOT`, same bindings |
 
 Touch is detected with `(pointer: coarse)` or `maxTouchPoints`. The pad writes
 to the same `game.keys` set as the keyboard, so both input paths drive one

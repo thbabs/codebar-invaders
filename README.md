@@ -20,9 +20,9 @@ Open the printed URL, then press **Space**.
 | Input | Action |
 | --- | --- |
 | `←` `→` | Move |
-| `Space` | Fire (max one shot every 220ms) |
+| `Space` | Shoot (max one shot every 220ms) |
 | Tap / click the canvas | Start or retry |
-| On-screen pad | `◀` `▶` `FIRE` on touch devices |
+| On-screen pad | `◀` `▶` `SHOOT` on touch devices |
 
 ## Files
 

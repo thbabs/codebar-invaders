@@ -669,7 +669,7 @@ function drawIntro() {
   ctx.fillStyle = COLORS.dim;
   ctx.font = '600 14px "Courier New", monospace';
   ctx.fillText(
-    isTouch ? 'USE THE CONTROLS BELOW' : '← →  MOVE      SPACE  FIRE',
+    isTouch ? 'USE THE CONTROLS BELOW' : '← →  MOVE      SPACE  SHOOT',
     W / 2,
     536,
   );
@@ -817,10 +817,6 @@ const PAD_KEYS = {
   right: 'ArrowRight',
   fire: 'Space',
 };
-
-if (isTouch) {
-  pad.hidden = false;
-}
 
 for (const button of document.querySelectorAll('[data-control]')) {
   const code = PAD_KEYS[button.dataset.control];
