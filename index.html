@@ -2,25 +2,44 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Invaders</title>
-  <meta name="description" content="A one-page Space Invaders built with canvas and vanilla JavaScript.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e1116">
+  <meta name="color-scheme" content="dark">
+  <title>Invaders — codebar AI workshop</title>
+  <meta name="description" content="A one-page Space Invaders built with canvas and vanilla JavaScript. Play in your browser.">
+  <meta property="og:title" content="Invaders">
+  <meta property="og:description" content="A one-page Space Invaders built with canvas and vanilla JavaScript.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E1116'/%3E%3Cpath d='M16 5l9 20H7z' fill='%2384B59F'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="stage">
-    <div class="frame">
-      <canvas
-        id="game"
-        width="800"
-        height="600"
-        aria-label="Invaders arcade game. Use the left and right arrow keys to move and space to fire."
-      ></canvas>
+    <div class="cabinet">
+      <div class="screen">
+        <canvas
+          id="game"
+          width="800"
+          height="600"
+          aria-label="Invaders arcade game. Use the left and right arrow keys to move and space to fire."
+        ></canvas>
+      </div>
+
+      <div class="pad" id="pad" hidden>
+        <button type="button" class="pad-btn" data-control="left" aria-label="Move left">◀</button>
+        <button type="button" class="pad-btn" data-control="right" aria-label="Move right">▶</button>
+        <button type="button" class="pad-btn pad-fire" data-control="fire" aria-label="Fire">FIRE</button>
+      </div>
     </div>
+
     <p class="hint">
-      <kbd>←</kbd> <kbd>→</kbd> move &nbsp;·&nbsp; <kbd>space</kbd> fire
+      <kbd>←</kbd> <kbd>→</kbd> move <span class="sep">·</span> <kbd>space</kbd> fire
     </p>
   </main>
+
+  <footer class="credit">
+    Challenge 02 · <a href="https://github.com/codebar/ai-workshop-opencode" rel="noopener">codebar AI workshop</a>
+  </footer>
 
   <script src="game.js"></script>
 </body>

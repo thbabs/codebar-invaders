@@ -23,6 +23,13 @@ canvas.width = W * dpr;
 canvas.height = H * dpr;
 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
+const isTouch = window.matchMedia('(pointer: coarse)').matches
+  || navigator.maxTouchPoints > 0;
+
+if (isTouch) {
+  document.body.classList.add('is-touch');
+}
+
 /* ---------------------------------------------------------------- sprites */
 
 const ALIEN_FRAMES = [
@@ -654,14 +661,18 @@ function drawIntro() {
   if (Math.floor(game.time * 2) % 2 === 0) {
     ctx.fillStyle = COLORS.accent;
     ctx.font = '700 20px "Courier New", monospace';
-    ctx.fillText('PRESS SPACE TO START', W / 2, 428);
+    ctx.fillText(isTouch ? 'TAP TO START' : 'PRESS SPACE TO START', W / 2, 404);
   }
 
-  drawSprite(SHIP, W / 2 - 24, 478, 4, COLORS.ship);
+  drawSprite(SHIP, W / 2 - 24, 452, 4, COLORS.ship);
 
   ctx.fillStyle = COLORS.dim;
   ctx.font = '600 14px "Courier New", monospace';
-  ctx.fillText('← →  MOVE      SPACE  FIRE', W / 2, 552);
+  ctx.fillText(
+    isTouch ? 'USE THE CONTROLS BELOW' : '← →  MOVE      SPACE  FIRE',
+    W / 2,
+    536,
+  );
 
   ctx.restore();
 }
@@ -687,7 +698,7 @@ function drawGameOver() {
   if (Math.floor(game.time * 2) % 2 === 0 && game.overCooldown <= 0) {
     ctx.fillStyle = COLORS.accent;
     ctx.font = '700 20px "Courier New", monospace';
-    ctx.fillText('PRESS SPACE TO RETRY', W / 2, 436);
+    ctx.fillText(isTouch ? 'TAP TO RETRY' : 'PRESS SPACE TO RETRY', W / 2, 436);
   }
 
   ctx.restore();
@@ -708,7 +719,9 @@ function draw() {
 
   drawHorizon();
   drawAliens();
-  drawPlayer();
+  if (game.mode !== 'intro') {
+    drawPlayer();
+  }
   drawBullets();
   drawParticles();
 
@@ -746,6 +759,18 @@ function eventCode(event) {
   return event.key;
 }
 
+function primaryAction() {
+  if (game.mode === 'intro') {
+    startGame();
+    return true;
+  }
+  if (game.mode === 'gameover' && game.overCooldown <= 0) {
+    startGame();
+    return true;
+  }
+  return false;
+}
+
 window.addEventListener('keydown', (event) => {
   const code = eventCode(event);
 
@@ -759,11 +784,7 @@ window.addEventListener('keydown', (event) => {
   if (event.repeat) return;
 
   if (code === 'Space') {
-    if (game.mode === 'intro') {
-      startGame();
-    } else if (game.mode === 'gameover' && game.overCooldown <= 0) {
-      startGame();
-    }
+    primaryAction();
   }
 });
 
@@ -777,7 +798,64 @@ window.addEventListener('blur', () => {
 
 document.addEventListener('visibilitychange', () => {
   lastTime = performance.now();
+  if (document.hidden) {
+    game.keys.clear();
+  }
 });
+
+/* Touch and click: start or retry from the canvas, then use the on-screen pad. */
+
+canvas.addEventListener('pointerdown', (event) => {
+  event.preventDefault();
+  ensureAudio();
+  primaryAction();
+});
+
+const pad = document.getElementById('pad');
+const PAD_KEYS = {
+  left: 'ArrowLeft',
+  right: 'ArrowRight',
+  fire: 'Space',
+};
+
+if (isTouch) {
+  pad.hidden = false;
+}
+
+for (const button of document.querySelectorAll('[data-control]')) {
+  const code = PAD_KEYS[button.dataset.control];
+  if (!code) continue;
+
+  button.addEventListener('pointerdown', (event) => {
+    event.preventDefault();
+    ensureAudio();
+
+    button.classList.add('is-held');
+    game.keys.add(code);
+
+    if (button.setPointerCapture) {
+      try {
+        button.setPointerCapture(event.pointerId);
+      } catch (error) {
+        // Some browsers refuse capture on synthetic pointers; holding still works.
+      }
+    }
+
+    if (code === 'Space') {
+      primaryAction();
+    }
+  });
+
+  const release = () => {
+    button.classList.remove('is-held');
+    game.keys.delete(code);
+  };
+
+  button.addEventListener('pointerup', release);
+  button.addEventListener('pointercancel', release);
+  button.addEventListener('lostpointercapture', release);
+  button.addEventListener('contextmenu', (event) => event.preventDefault());
+}
 
 /* ------------------------------------------------------------------- loop */
 

@@ -13,6 +13,8 @@ Rules for anyone — human or agent — changing this project.
 - **No external assets.** No images, no sprite sheets, no audio files, no web
   fonts. Sprites are string bitmaps; sound is synthesized with WebAudio.
 - **No gradients** in the rendered game. Flat colours and pixel edges only.
+- **Touch is first-class.** The pad must write to the same `game.keys` set and
+  call the same `primaryAction()` as the keyboard. Never fork the simulation.
 
 ## Architecture
 

@@ -13,10 +13,12 @@ Open the printed URL, then press **Space**.
 
 ## Controls
 
-| Key | Action |
+| Input | Action |
 | --- | --- |
 | `←` `→` | Move |
 | `Space` | Fire (max one shot every 220ms) |
+| Tap / click the canvas | Start or retry |
+| On-screen pad | `◀` `▶` `FIRE` on touch devices |
 
 ## Files
 
