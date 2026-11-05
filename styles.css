@@ -120,6 +120,28 @@ canvas {
   color: var(--sage);
 }
 
+.pad-pause {
+  flex: 0 0 58px;
+  color: var(--paper);
+}
+
+.pad-pause .icon-play {
+  display: none;
+}
+
+.pad-pause.is-paused .icon-pause {
+  display: none;
+}
+
+.pad-pause.is-paused .icon-play {
+  display: block;
+}
+
+.pad-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .pad-btn:focus-visible {
   outline: 2px solid var(--sage);
   outline-offset: 2px;

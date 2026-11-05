@@ -21,8 +21,9 @@ Open the printed URL, then press **Space**.
 | --- | --- |
 | `←` `→` | Move |
 | `Space` | Shoot (max one shot every 220ms) |
-| Tap / click the canvas | Start or retry |
-| On-screen pad | `◀` `▶` `SHOOT` on touch devices |
+| `P` / `Esc` | Pause or resume |
+| Tap / click the canvas | Start, retry, or resume from pause |
+| On-screen pad | `◀` `▶` `SHOOT`, plus pause/resume |
 
 ## Files
 

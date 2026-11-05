@@ -37,6 +37,9 @@ Rules for anyone — human or agent — changing this project.
 - Reaching the player's row ends the run immediately.
 - The high score key is `invaders-high-score` and is only written when beaten.
 - `Space` must never restart the game during the 0.8s `overCooldown` window.
+- Pausing must freeze `update()` completely: no alien movement, bullets, firing
+  timers, particles or banner decay. Only `game.time` keeps advancing.
+- Hiding the tab auto-pauses a running game.
 
 ## Style
 

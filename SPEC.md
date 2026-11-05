@@ -32,7 +32,8 @@ guard so the shot that killed you cannot restart the game instantly.
 ## Mechanics
 
 - **Player** 48×24 at the bottom, moves with `←` / `→` at 430 px/s, clamped
-  14px inside the field. Drawn as a 12×6 pixel bitmap.- **Shooting** `Space`, held or tapped, fires at most one bullet every 220ms.
+  14px inside the field. Drawn as a 12×6 pixel bitmap.
+- **Shooting** `Space`, held or tapped, fires at most one bullet every 220ms.
   Player bullets travel upward at 640 px/s.
 - **Aliens** 5 rows × 8 columns, 44×32 each, starting 78px from the top.
   The formation moves as a block, reverses on contact with either side wall,
@@ -53,13 +54,21 @@ guard so the shot that killed you cannot restart the game instantly.
 | --- | --- |
 | `←` / `→` | Move |
 | `Space` | Shoot; hold to repeat at the 220ms cooldown |
-| Click or tap the canvas | Start or retry |
-| On-screen pad (touch) | `◀` `▶` `SHOOT`, same bindings |
+| `P` / `Esc` | Pause or resume |
+| Click or tap the canvas | Start, retry, or resume from pause |
+| On-screen pad | `◀` `▶` `SHOOT`, plus a pause/resume button |
 
-Touch is detected with `(pointer: coarse)` or `maxTouchPoints`. The pad writes
-to the same `game.keys` set as the keyboard, so both input paths drive one
-simulation. On touch devices the keyboard hint is hidden, the stage narrows to
-leave room for the pad, and the intro reads `TAP TO START`.
+## Pause
+
+- `P`, `Esc`, the pad button, or a tap on the canvas resumes a paused game.
+- Pausing freezes the whole simulation: aliens, bullets, fire timers, particles.
+  The overlay keeps the score and wave visible.
+- Hiding the tab auto-pauses a running game, so a phone call does not cost a life.
+- The button swaps to a play icon and reads "Resume" while paused.
+
+The pad writes to the same `game.keys` set as the keyboard, so every input path
+drives one simulation. On touch devices the keyboard hint is hidden and the
+intro reads `TAP TO START`.
 
 ## Scoring
 

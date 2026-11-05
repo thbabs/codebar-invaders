@@ -70,6 +70,7 @@ const ROW_POINTS = [50, 40, 30, 20, 10];
 
 const game = {
   mode: 'intro',
+  paused: false,
   score: 0,
   high: loadHighScore(),
   wave: 1,
@@ -239,6 +240,7 @@ function drawSprite(rows, x, y, cell, color) {
 
 function startGame() {
   game.mode = 'playing';
+  game.paused = false;
   game.score = 0;
   game.wave = 1;
   game.lives = 3;
@@ -253,6 +255,7 @@ function startGame() {
   game.player.cooldown = 0;
   game.player.invuln = 0;
   spawnWave();
+  syncPauseButton();
 }
 
 function spawnWave() {
@@ -423,6 +426,7 @@ function endGame() {
   if (game.mode !== 'playing') return;
 
   game.mode = 'gameover';
+  game.paused = false;
   game.overCooldown = 0.8;
   game.shake = 12;
   game.bullets = [];
@@ -432,6 +436,8 @@ function endGame() {
     game.high = game.score;
     saveHighScore();
   }
+
+  syncPauseButton();
 }
 
 function collide() {
@@ -504,6 +510,9 @@ function updateParticles(dt) {
 
 function update(dt) {
   game.time += dt;
+
+  // A paused game freezes everything: aliens, bullets, timers and particles.
+  if (game.paused && game.mode === 'playing') return;
 
   game.shake = Math.max(0, game.shake - 55 * dt);
   game.flash = Math.max(0, game.flash - 2.6 * dt);
@@ -677,6 +686,35 @@ function drawIntro() {
   ctx.restore();
 }
 
+function drawPaused() {
+  ctx.save();
+  ctx.fillStyle = 'rgba(14, 17, 22, 0.72)';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = COLORS.ship;
+  ctx.font = '700 52px "Courier New", monospace';
+  ctx.fillText('PAUSED', W / 2, 268);
+
+  ctx.fillStyle = COLORS.dim;
+  ctx.font = '600 15px "Courier New", monospace';
+  ctx.fillText(
+    isTouch ? 'TAP THE SCREEN TO RESUME' : 'PRESS P, ESC OR CLICK TO RESUME',
+    W / 2,
+    318,
+  );
+
+  ctx.fillStyle = COLORS.text;
+  ctx.font = '600 14px "Courier New", monospace';
+  ctx.fillText(
+    `SCORE ${String(game.score).padStart(6, '0')}   WAVE ${game.wave}`,
+    W / 2,
+    366,
+  );
+
+  ctx.restore();
+}
+
 function drawGameOver() {
   ctx.save();
   ctx.fillStyle = 'rgba(14, 17, 22, 0.78)';
@@ -741,6 +779,10 @@ function draw() {
   }
 
   drawBanner();
+
+  if (game.paused && game.mode === 'playing') {
+    drawPaused();
+  }
 }
 
 /* ------------------------------------------------------------------ input */
@@ -771,6 +813,24 @@ function primaryAction() {
   return false;
 }
 
+function syncPauseButton() {
+  pauseBtn.disabled = game.mode !== 'playing';
+  pauseBtn.classList.toggle('is-paused', game.paused);
+  pauseBtn.setAttribute('aria-label', game.paused ? 'Resume' : 'Pause');
+}
+
+function setPaused(next) {
+  if (game.mode !== 'playing') return;
+  game.paused = next;
+  game.keys.clear();
+  syncPauseButton();
+}
+
+function togglePause() {
+  if (game.mode !== 'playing') return;
+  setPaused(!game.paused);
+}
+
 window.addEventListener('keydown', (event) => {
   const code = eventCode(event);
 
@@ -782,6 +842,12 @@ window.addEventListener('keydown', (event) => {
   game.keys.add(code);
 
   if (event.repeat) return;
+
+  if (code === 'KeyP' || code === 'Escape' || code === 'p' || code === 'P') {
+    event.preventDefault();
+    togglePause();
+    return;
+  }
 
   if (code === 'Space') {
     primaryAction();
@@ -800,6 +866,9 @@ document.addEventListener('visibilitychange', () => {
   lastTime = performance.now();
   if (document.hidden) {
     game.keys.clear();
+    if (game.mode === 'playing') {
+      setPaused(true);
+    }
   }
 });
 
@@ -808,10 +877,17 @@ document.addEventListener('visibilitychange', () => {
 canvas.addEventListener('pointerdown', (event) => {
   event.preventDefault();
   ensureAudio();
+
+  if (game.mode === 'playing' && game.paused) {
+    setPaused(false);
+    return;
+  }
+
   primaryAction();
 });
 
 const pad = document.getElementById('pad');
+const pauseBtn = document.getElementById('pause');
 const PAD_KEYS = {
   left: 'ArrowLeft',
   right: 'ArrowRight',
@@ -852,6 +928,13 @@ for (const button of document.querySelectorAll('[data-control]')) {
   button.addEventListener('lostpointercapture', release);
   button.addEventListener('contextmenu', (event) => event.preventDefault());
 }
+
+pauseBtn.addEventListener('click', () => {
+  ensureAudio();
+  togglePause();
+});
+
+syncPauseButton();
 
 /* ------------------------------------------------------------------- loop */
 
